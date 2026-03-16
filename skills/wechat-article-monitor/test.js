@@ -26,18 +26,18 @@ async function runTest() {
     console.log('\n📝 测试 1: 获取公众号信息');
     console.log('-'.repeat(60));
     
-    const accountInfo = await monitor.getAccountInfo('36 氪');
-    console.log(`\n✅ 公众号信息:`);
-    console.log(`   名称：${accountInfo.name}`);
+    const accountInfo = await monitor.getAccountInfo('36氪');
+    console.log('\n✅ 公众号信息:');
+    console.log(`   名称: ${accountInfo.name}`);
     console.log(`   ID: ${accountInfo.id}`);
-    console.log(`   描述：${accountInfo.description}`);
+    console.log(`   描述: ${accountInfo.description}`);
     
     // 测试 2：获取最新文章
     console.log('\n\n📝 测试 2: 获取最新文章');
     console.log('-'.repeat(60));
     
     const articles = await monitor.fetchLatestArticles(accountInfo.id, 5);
-    console.log(`✅ 获取到 ${articles.length} 篇文章`);
+    console.log(`\n✅ 获取到 ${articles.length} 篇文章`);
     
     if (articles.length > 0) {
       console.log('\n📋 最新文章:');
@@ -55,14 +55,14 @@ async function runTest() {
     console.log('-'.repeat(60));
     
     await storage.saveArticles(accountInfo.id, articles);
-    console.log('✅ 文章已保存');
+    console.log('\n✅ 文章已保存');
     
     // 测试 4：读取文章
     console.log('\n\n📝 测试 4: 从本地读取文章');
     console.log('-'.repeat(60));
     
     const savedArticles = await storage.getArticles(accountInfo.id);
-    console.log(`✅ 读取到 ${savedArticles.length} 篇文章`);
+    console.log(`\n✅ 读取到 ${savedArticles.length} 篇文章`);
     
     // 测试 5：发送通知
     console.log('\n\n📝 测试 5: 发送通知');
@@ -81,14 +81,14 @@ async function runTest() {
     });
     
     const accounts = await storage.getAccounts();
-    console.log(`✅ 监控列表中有 ${accounts.length} 个公众号`);
+    console.log(`\n✅ 监控列表中有 ${accounts.length} 个公众号`);
     
     if (accounts.length > 0) {
       console.log('\n📋 公众号列表:');
       accounts.forEach((account, i) => {
         console.log(`\n${i + 1}. ${account.name}`);
-        console.log(`   ID：${account.id}`);
-        console.log(`   添加时间：${account.addedAt}`);
+        console.log(`   ID: ${account.id}`);
+        console.log(`   添加时间: ${account.addedAt}`);
       });
     }
     
@@ -111,10 +111,6 @@ async function runTest() {
       error: error.message
     };
   }
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // 运行测试

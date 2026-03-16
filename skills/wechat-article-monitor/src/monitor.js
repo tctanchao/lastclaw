@@ -46,6 +46,108 @@ class Monitor {
           name: '虎嗅网',
           avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
           description: '聚合新闻与商业资讯'
+        },
+        '差评': {
+          id: 'chaoping',
+          name: '差评',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '消费决策与社区驱动的新媒体平台'
+        },
+        '舴范儿': {
+          id: 'shifan',
+          name: '舴范儿',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '生活方式类内容品牌，主打平价优质商品'
+        },
+        '清博数据': {
+          id: 'qingblog',
+          name: '清博数据',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '聚合优质博客内容，提供深度的数据分析'
+        },
+        '晚点': {
+          id: 'wanbaodian',
+          name: '晚点',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '面向年轻人的文化内容平台'
+        },
+        '新榜': {
+          id: 'xinbang',
+          name: '新榜',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '新媒体数据平台，提供各类榜单数据'
+        },
+        '新讯': {
+          id: 'xink',
+          name: '新讯',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '科技与商业领域的新媒体'
+        },
+        '澎湃': {
+          id: 'thepaper',
+          name: '澎湃',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '原澎湃新闻、思想者、优质内容平台'
+        },
+        '36氪': {
+          id: '36kr',
+          name: '36氪',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '关注科技、创业、投资领域'
+        },
+        '极客时间': {
+          id: 'geektime',
+          name: '极客时间',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '科技媒体，提供有价值的科技资讯'
+        },
+        '虎嗅网': {
+          id: 'huxiu',
+          name: '虎嗅网',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '聚合新闻与商业资讯'
+        },
+        '差评': {
+          id: 'chaoping',
+          name: '差评',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '消费决策与社区驱动的新媒体平台'
+        },
+        '舴范儿': {
+          id: 'shifan',
+          name: '舴范儿',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '生活方式类内容品牌，主打平价优质商品'
+        },
+        '清博数据': {
+          id: 'qingblog',
+          name: '清博数据',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '聚合优质博客内容，提供深度的数据分析'
+        },
+        '晚点': {
+          id: 'wanbaodian',
+          name: '晚点',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '面向年轻人的文化内容平台'
+        },
+        '新榜': {
+          id: 'xinbang',
+          name: '新榜',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '新媒体数据平台，提供各类榜单数据'
+        },
+        '新讯': {
+          id: 'xink',
+          name: '新讯',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
+          description: '科技与商业领域的新媒体'
+        },
+        '澎湃': {
+          id: 'thepaper',
+          name: '澎湃',
+          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx.jpg',
+          description: '原澎湃新闻、思想者、优质内容平台'
         }
       };
       
@@ -135,7 +237,7 @@ class Monitor {
   _generateMockArticles(accountId, limit) {
     const titles = [
       'AI 时代，程序员如何保持竞争力？',
-            `2026 年科技行业趋势预测`,
+      '2026 年科技行业趋势预测',
       '开源大模型选型指南',
       '为什么 90% 的程序员都选择这个框架',
       'JavaScript 性能优化 10 个技巧',
