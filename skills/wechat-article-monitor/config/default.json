@@ -1,0 +1,8 @@
+{
+  "version": "0.1.0",
+  "checkInterval": 3600,
+  "notifyEnabled": true,
+  "maxArticles": 10,
+  "apiKey": "",
+  "dataDir": "./data"
+}
