@@ -1,0 +1,32 @@
+{
+  "name": "xiaohongshu-collector",
+  "version": "0.1.0",
+  "description": "小红书爆款采集 - 采集笔记数据，分析爆款内容",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node tests/basic.test.js",
+    "dev": "node src/index.js --dev",
+    "build": "echo 'No build step required'"
+  },
+  "keywords": [
+    "openclaw",
+    "skill",
+    "xiaohongshu",
+    "collector",
+    "小红书",
+    "爆款"
+  ],
+  "author": "tctanchao",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
+    "exceljs": "^4.4.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

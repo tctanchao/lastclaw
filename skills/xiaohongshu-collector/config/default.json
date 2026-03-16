@@ -1,0 +1,18 @@
+{
+  "version": "0.1.0",
+  "searchLimit": 50,
+  "minLikes": 1000,
+  "exportFormat": "excel",
+  "outputDir": "./exports",
+  "api": {
+    "baseUrl": "https://www.xiaohongshu.com",
+    "timeout": 30000,
+    "retryCount": 3
+  },
+  "features": {
+    "search": true,
+    "analyze": true,
+    "export": true,
+    "monitor": false
+  }
+}

@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+build/
+
+# Exports
+exports/
+*.xlsx
+*.csv
+
+# Config (keep template, ignore actual config)
+!config/default.json
+config/user.json
+*.local.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OpenClaw workspace state
+.openclaw/
+
+# Existing files (not part of skills project)
+ideal-financials-2023.md
+odoo.service
+render_pdf.py
+AGENTS.md
+BOOTSTRAP.md
+SOUL.md
+TOOLS.md
+USER.md
+IDENTITY.md
+HEARTBEAT.md
