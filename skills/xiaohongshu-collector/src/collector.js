@@ -112,7 +112,7 @@ class Collector {
           nickname: `博主${i + 1}`,
           followers: Math.floor(Math.random() * 100000)
         },
-        url: `https://www.xiaohongshu.com/explore/${note_${i}}`,
+        url: `https://www.xiaohongshu.com/explore/note_${i}`,
         createdAt: new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000).toISOString(),
         images: [`https://example.com/image${i}.jpg`],
         tags: [keyword, '推荐', '分享']
