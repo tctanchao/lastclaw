@@ -1,0 +1,13 @@
+# CODEOWNERS
+
+# Default: 所有者
+* @tctanchao
+
+# 特定目录的负责人
+skills/ @tctanchao
+docs/ @tctanchao
+
+# 特定文件类型
+*.md @tctanchao
+*.json @tctanchao
+*.js @tctanchao

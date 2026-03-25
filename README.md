@@ -1,6 +1,13 @@
 # LastClaw 🔥
 
-> OpenClaw 技能开发与变现项目
+> ⚠️ **技术演示版本：所有技能均为模拟数据，无法实际采集真实数据。仅用于展示 OpenClaw 技能开发框架。**
+
+OpenClaw 技能开发与变现项目
+
+[![CI](https://github.com/tctanchao/lastclaw/workflows/CI/badge.svg)](https://github.com/tctanchao/lastclaw/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node](https://img.shields.io/badge/Node-%3E%3D18.0.0-green)](https://nodejs.org/)
+[![Version](https://img.shields.io/badge/version-0.1.0--demo-blue)](https://github.com/tctanchao/lastclaw/releases)
 
 低成本启动，通过开发高质量的 OpenClaw 技能实现变现。
 
@@ -8,8 +15,8 @@
 
 | 技能 | 状态 | 定价 | 说明 |
 |------|------|------|------|
-| [公众号文章监控](./skills/wechat-article-monitor/) | ✅ 测试通过 | ¥29/月 | 监控公众号更新，实时推送通知 |
-| [小红书爆款采集](./skills/xiaohongshu-collector/) | ✅ 测试通过 | ¥39/月 | 采集笔记数据，分析爆款内容 |
+| [公众号文章监控](./skills/wechat-article-monitor/) | ✅ 演示版 | - | 监控公众号更新，实时推送通知（模拟数据）|
+| [小红书爆款采集](./skills/xiaohongshu-collector/) | ✅ 演示版 | - | 采集笔记数据，分析爆款内容（模拟数据）|
 | 智能邮件分类 | ⏳ 计划中 | ¥49/月 | 自动分类邮件，识别重要邮件 |
 
 ## 🚀 快速开始
@@ -58,12 +65,12 @@ openclaw skill test ./skills/my-new-skill
 
 ## 🤝 贡献
 
-欢迎提交 Issue 和 PR！
+欢迎提交 Issue 和 PR！详见 [贡献指南](./CONTRIBUTING.md)
 
 ## 📄 许可证
 
-MIT License
+[MIT License](./LICENSE)
 
 ---
 
-**状态说明**: 🚧 开发中 | ✅ 已完成 | ⏳ 计划中
+**状态说明**: 🚧 开发中 | ✅ 演示版（模拟数据）| ⏳ 计划中
