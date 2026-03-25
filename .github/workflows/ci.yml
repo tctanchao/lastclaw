@@ -14,28 +14,23 @@ jobs:
         node-version: [18.x, 20.x]
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
     - name: Install dependencies (wechat-article-monitor)
-      working-directory: ./skills/wechat-article-monitor
-      run: npm install
+      run: |
+        cd skills/wechat-article-monitor
+        npm install
 
     - name: Install dependencies (xiaohongshu-collector)
-      working-directory: ./skills/xiaohongshu-collector
-      run: npm install
+      run: |
+        cd skills/xiaohongshu-collector
+        npm install
 
     - name: Lint check
       run: |
@@ -52,23 +47,13 @@ jobs:
     - name: Verify package.json
       run: |
         echo "Validating package.json files..."
-        if [ ! -f "skills/wechat-article-monitor/package.json" ]; then
-          echo "❌ Missing package.json"
-          exit 1
-        fi
-        if [ ! -f "skills/xiaohongshu-collector/package.json" ]; then
-          echo "❌ Missing package.json"
-          exit 1
-        fi
+        test -f "skills/wechat-article-monitor/package.json" || { echo "❌ Missing wechat-article-monitor/package.json"; exit 1; }
+        test -f "skills/xiaohongshu-collector/package.json" || { echo "❌ Missing xiaohongshu-collector/package.json"; exit 1; }
+        echo "✅ All package.json files found"
 
     - name: Verify SKILL.md
       run: |
         echo "Validating SKILL.md files..."
-        if [ ! -f "skills/wechat-article-monitor/SKILL.md" ]; then
-          echo "❌ Missing SKILL.md"
-          exit 1
-        fi
-        if [ ! -f "skills/xiaohongshu-collector/SKILL.md" ]; then
-          echo "❌ Missing SKILL.md"
-          exit 1
-        fi
+        test -f "skills/wechat-article-monitor/SKILL.md" || { echo "❌ Missing wechat-article-monitor/SKILL.md"; exit 1; }
+        test -f "skills/xiaohongshu-collector/SKILL.md" || { echo "❌ Missing xiaohongshu-collector/SKILL.md"; exit 1; }
+        echo "✅ All SKILL.md files found"
