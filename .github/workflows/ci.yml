@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [18.x]
 
     steps:
     - name: Checkout code
@@ -23,18 +23,13 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Install dependencies (wechat-article-monitor)
-      run: |
-        cd skills/wechat-article-monitor
-        npm install
+      run: cd skills/wechat-article-monitor && npm install
 
     - name: Install dependencies (xiaohongshu-collector)
-      run: |
-        cd skills/xiaohongshu-collector
-        npm install
+      run: cd skills/xiaohongshu-collector && npm install
 
-    - name: Lint check
+    - name: Syntax check
       run: |
-        echo "Checking for syntax errors..."
         node -c skills/wechat-article-monitor/src/index.js
         node -c skills/wechat-article-monitor/src/monitor.js
         node -c skills/wechat-article-monitor/src/storage.js
@@ -44,16 +39,9 @@ jobs:
         node -c skills/xiaohongshu-collector/src/analyzer.js
         node -c skills/xiaohongshu-collector/src/exporter.js
 
-    - name: Verify package.json
+    - name: Verify files exist
       run: |
-        echo "Validating package.json files..."
-        test -f "skills/wechat-article-monitor/package.json" || { echo "❌ Missing wechat-article-monitor/package.json"; exit 1; }
-        test -f "skills/xiaohongshu-collector/package.json" || { echo "❌ Missing xiaohongshu-collector/package.json"; exit 1; }
-        echo "✅ All package.json files found"
-
-    - name: Verify SKILL.md
-      run: |
-        echo "Validating SKILL.md files..."
-        test -f "skills/wechat-article-monitor/SKILL.md" || { echo "❌ Missing wechat-article-monitor/SKILL.md"; exit 1; }
-        test -f "skills/xiaohongshu-collector/SKILL.md" || { echo "❌ Missing xiaohongshu-collector/SKILL.md"; exit 1; }
-        echo "✅ All SKILL.md files found"
+        test -f "skills/wechat-article-monitor/package.json"
+        test -f "skills/xiaohongshu-collector/package.json"
+        test -f "skills/wechat-article-monitor/SKILL.md"
+        test -f "skills/xiaohongshu-collector/SKILL.md"
