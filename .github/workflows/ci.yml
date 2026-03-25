@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install dependencies (wechat-article-monitor)
+      working-directory: ./skills/wechat-article-monitor
+      run: npm install
+
+    - name: Install dependencies (xiaohongshu-collector)
+      working-directory: ./skills/xiaohongshu-collector
+      run: npm install
+
+    - name: Lint check
+      run: |
+        echo "Checking for syntax errors..."
+        node -c skills/wechat-article-monitor/src/index.js
+        node -c skills/wechat-article-monitor/src/monitor.js
+        node -c skills/wechat-article-monitor/src/storage.js
+        node -c skills/wechat-article-monitor/src/notifier.js
+        node -c skills/xiaohongshu-collector/src/index.js
+        node -c skills/xiaohongshu-collector/src/collector.js
+        node -c skills/xiaohongshu-collector/src/analyzer.js
+        node -c skills/xiaohongshu-collector/src/exporter.js
+
+    - name: Verify package.json
+      run: |
+        echo "Validating package.json files..."
+        if [ ! -f "skills/wechat-article-monitor/package.json" ]; then
+          echo "❌ Missing package.json"
+          exit 1
+        fi
+        if [ ! -f "skills/xiaohongshu-collector/package.json" ]; then
+          echo "❌ Missing package.json"
+          exit 1
+        fi
+
+    - name: Verify SKILL.md
+      run: |
+        echo "Validating SKILL.md files..."
+        if [ ! -f "skills/wechat-article-monitor/SKILL.md" ]; then
+          echo "❌ Missing SKILL.md"
+          exit 1
+        fi
+        if [ ! -f "skills/xiaohongshu-collector/SKILL.md" ]; then
+          echo "❌ Missing SKILL.md"
+          exit 1
+        fi

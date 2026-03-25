@@ -1,9 +1,10 @@
 /**
- * 公众号文章监控 - 主入口
- * 
+ * 公众号文章文章监控 - 主入口
+ *
  * @module wechat-article-monitor
  */
 
+const cron = require('node-cron');
 const Monitor = require('./monitor');
 const Notifier = require('./notifier');
 const Storage = require('./storage');
@@ -17,11 +18,11 @@ class WeChatArticleMonitor {
       apiKey: config.apiKey,
       ...config
     };
-    
+
     this.monitor = new Monitor(this.config);
     this.notifier = new Notifier(this.config);
     this.storage = new Storage(this.config);
-    
+
     this.scheduledJobs = new Map();
   }
 
@@ -33,31 +34,31 @@ class WeChatArticleMonitor {
    */
   async addAccount(name, id = null) {
     console.log(`📰 添加公众号：${name}`);
-    
+
     try {
       // 获取公众号信息
       const accountInfo = await this.monitor.getAccountInfo(name);
-      
+
       // 保存到存储
       await this.storage.addAccount({
         name,
         id: accountInfo.id || id || name,
         addedAt: new Date().toISOString()
       });
-      
+
       // 立即获取一次最新文章
       const articles = await this.monitor.fetchLatestArticles(accountInfo.id || id || name, this.config.maxArticles);
-      
+
       await this.storage.saveArticles(accountInfo.id || id || name, articles);
-      
+
       console.log(`✅ 公众号添加成功，获取 ${articles.length} 篇文章`);
-      
+
       return {
         success: true,
         account: accountInfo,
         articles
       };
-      
+
     } catch (error) {
       console.error(`❌ 添加公众号失败：${error.message}`);
       throw new Error(`添加公众号失败：${error.message}`);
@@ -94,23 +95,23 @@ class WeChatArticleMonitor {
    */
   async removeAccount(accountName) {
     console.log(`🗑️ 删除公众号：${accountName}`);
-    
+
     // 停止定时任务
     if (this.scheduledJobs.has(accountName)) {
       const job = this.scheduledJobs.get(accountName);
       job.stop();
       this.scheduledJobs.delete(accountName);
     }
-    
+
     // 删除存储
     const result = await this.storage.removeAccount(accountName);
-    
+
     if (result) {
-    console.log('✅ 删除成功');
+      console.log('✅ 删除成功');
     } else {
       console.log('❌ 删除失败');
     }
-    
+
     return result;
   }
 
@@ -120,21 +121,21 @@ class WeChatArticleMonitor {
    */
   async startMonitoring() {
     console.log('🚀 启动实时监控...\n');
-    
+
     const accounts = await this.storage.getAccounts();
-    
+
     if (accounts.length === 0) {
       console.log('⚠️ 还没有添加公众号');
       console.log('提示：使用 /公众号监控 添加 [公众号名称] 来添加');
       return;
     }
-    
+
     console.log(`📋 监控 ${accounts.length} 个公众号`);
-    
+
     for (const account of accounts) {
       await this._startMonitoringAccount(account);
     }
-    
+
     console.log('\n✅ 实时监控已启动！');
     console.log(`检查间隔：${this.config.checkInterval / 60} 分钟\n`);
   }
@@ -145,57 +146,61 @@ class WeChatArticleMonitor {
    */
   async _startMonitoringAccount(account) {
     console.log(`\n📰 ${account.name} - 开始监控`);
-    
+
     // 查看已有文章
     const existingArticles = await this.storage.getArticles(account.id);
     const existingTitles = new Set(existingArticles.map(a => a.title));
-    
-    // 定时检查
+
+    // 定时检查函数
     const checkFunction = async () => {
       try {
         // 获取最新文章
         const newArticles = await this.monitor.fetchLatestArticles(account.id, this.config.maxArticles);
-        
+
         // 过滤出新文章
         const freshArticles = newArticles.filter(article => !existingTitles.has(article.title));
-        
+
         if (freshArticles.length > 0) {
           console.log(`\n🔔 发现 ${freshArticles.length} 篇新文章：${account.name}`);
-          
+
           for (const article of freshArticles) {
             console.log(`   - 《${article.title}》`);
             console.log(`     📅 ${article.publishTime}`);
             console.log(`     🔗 ${article.url}`);
           }
-          
+
           // 保存新文章
           await this.storage.saveArticles(account.id, [...newArticles]);
-          
+
           // 发送通知
           if (this.config.notifyEnabled) {
             await this.notifier.sendNotification(account, freshArticles);
           }
-          
+
           // 更新已有标题集合
           for (const article of freshArticles) {
             existingTitles.add(article.title);
           }
         } else {
-          console.log(`✓ ${account.name} - 暂无新文章 (${new Date().toLocaleTimeString()})`);
+          console.log(`✓ ${account.name} - 暂无新文章 (${new Date().().toLocaleTimeString()})`);
         }
       } catch (error) {
         console.error(`❌ 检查失败：${error.message}`);
       }
     };
-    
+
     // 立即检查一次
     await checkFunction();
-    
-    // 定时检查
-    const schedule = require('node-schedule');
-    const job = schedule.scheduleJob(`*/${Math.floor(this.config.checkInterval / 60)} * * * *`, checkFunction);
+
+    // 使用 node-cron 设置定时任务
+    // checkInterval 是秒数，转换为分钟
+    const minutes = Math.floor(this.config.checkInterval / 60);
+    // 每N分钟执行一次：*/N * * * *
+    const cronExpression = `*/${minutes} * * * *`;
+
+    const job = cron.schedule(cronExpression, checkFunction);
     job.start();
-    
+
     this.scheduledJobs.set(account.id, job);
   }
 
@@ -205,12 +210,12 @@ class WeChatArticleMonitor {
    */
   async stopMonitoring() {
     console.log('⏹ 停止监控...\n');
-    
+
     for (const [accountId, job] of this.scheduledJobs) {
       job.stop();
       console.log(`✓ 已停止：${accountId}`);
     }
-    
+
     this.scheduledJobs.clear();
     console.log('✅ 所有监控已停止');
   }
@@ -224,36 +229,34 @@ class WeChatArticleMonitor {
   async exportArticles(accountName, format = 'markdown') {
     try {
       const articles = await this.storage.getArticles(accountName);
-      
+
       if (articles.length === 0) {
         console.log('⚠️ 没有可导出的文章');
         return null;
       }
-      
+
       const path = require('path');
-      const fs = require('fs');
-      
+      const fs = require('fs').promises;
+
       const exportDir = './exports';
-      if (!fs.existsSync(exportDir)) {
-        fs.mkdirSync(exportDir, { recursive: true });
-      }
-      
+      await fs.mkdir(exportDir, { recursive: true });
+
       const filename = `${accountName}_articles.${format === 'markdown' ? 'md' : 'csv'}`;
       const filepath = path.join(exportDir, filename);
-      
+
       if (format === 'markdown') {
         const content = this._generateMarkdown(articles, accountName);
-        fs.writeFileSync(filepath, content, 'utf-8');
+        await fs.writeFile(filepath, content, 'utf-8');
       } else {
         const content = this._generateCSV(articles);
-        fs.writeFileSync(filepath, content, 'utf-8');
+        await fs.writeFile(filepath, content, 'utf-8');
       }
-      
+
       console.log(`✅ 导出成功：${filepath}`);
       console.log(`   文章数：${articles.length}`);
-      
+
       return filepath;
-      
+
     } catch (error) {
       console.error(`导出失败：${error.message}`);
       throw new Error(`导出失败：${error.message}`);
@@ -274,7 +277,7 @@ class WeChatArticleMonitor {
       '---',
       ''
     ];
-    
+
     articles.forEach((article, index) => {
       lines.push(`## ${index + 1}. ${article.title}`);
       lines.push('');
@@ -289,7 +292,7 @@ class WeChatArticleMonitor {
       lines.push('---');
       lines.push('');
     });
-    
+
     return lines.join('\n');
   }
 
@@ -299,7 +302,7 @@ class WeChatArticleMonitor {
    */
   _generateCSV(articles) {
     const headers = ['标题', '发布时间', '阅读数', '点赞数', '链接', '摘要'];
-    
+
     const rows = articles.map(article => [
         this._escapeCSV(article.title),
         article.publishTime,
@@ -308,7 +311,7 @@ class WeChatArticleMonitor {
         article.url,
         this._escapeCSV(article.content?.substring(0, 200) || '')
       ]);
-    
+
     return [
       headers.join(','),
       ...rows.map(row => row.join(','))
@@ -333,38 +336,38 @@ module.exports = {
   name: 'wechat-article-monitor',
   version: '0.1.0',
   description: '公众号文章监控',
-  
+
   handlers: {
     async add({ name, id }) {
       const monitor = new WeChatArticleMonitor();
       return await monitor.addAccount(name, id);
     },
-    
+
     async latest({ name }) {
       const monitor = new WeChatArticleMonitor();
       return await monitor.getLatestArticles(name);
     },
-    
+
     async list() {
       const monitor = new WeChatArticleMonitor();
       return await monitor.listAccounts();
     },
-    
+
     async remove({ name }) {
       const monitor = new WeChatArticleMonitor();
       return await monitor.removeAccount(name);
     },
-    
+
     async start() {
       const monitor = new WeChatArticleMonitor();
       await monitor.startMonitoring();
     },
-    
+
     async stop() {
       const monitor = new WeChatArticleMonitor();
       await monitor.stopMonitoring();
     },
-    
+
     async export({ name, format }) {
       const monitor = new WeChatArticleMonitor();
       return await monitor.exportArticles(name, format);

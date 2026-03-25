@@ -4,8 +4,6 @@
   "description": "公众号文章监控 - 实时监控微信文章更新",
   "main": "src/index.js",
   "scripts": {
-    "test": "node tests/basic.test.js",
-    "dev": "node src/index.js --dev",
     "start": "node src/index.js"
   },
   "keywords": [
@@ -21,11 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^1.6.0",
-    "cheerio": "^1.0.0-rc.12",
-    "node-schedule": "^2.1.1"
-  },
-  "devDependencies": {
-    "jest": "^29.7.0"
+    "node-cron": "^3.0.0"
   },
   "engines": {
     "node": ">=18.0.0"

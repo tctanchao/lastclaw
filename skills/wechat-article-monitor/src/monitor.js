@@ -1,6 +1,6 @@
 /**
  * 公众号监控模块
- * 
+ *
  * 负责获取公众号信息和文章数据
  */
 
@@ -24,9 +24,9 @@ class Monitor {
     try {
       // TODO: 实现真实的微信 API 调用
       // 目前返回模拟数据
-      
+
       console.log(`正在获取公众号信息：${name}`);
-      
+
       // 模拟公众号信息
       const mockAccounts = {
         '36氪': {
@@ -60,7 +60,7 @@ class Monitor {
           description: '生活方式类内容品牌，主打平价优质商品'
         },
         '清博数据': {
-          id: 'qingblog',
+          id: 'qingblogb',
           name: '清博数据',
           avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
           description: '聚合优质博客内容，提供深度的数据分析'
@@ -87,78 +87,18 @@ class Monitor {
           id: 'thepaper',
           name: '澎湃',
           avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
-          description: '原澎湃新闻、思想者、优质内容平台'
-        },
-        '36氪': {
-          id: '36kr',
-          name: '36氪',
-          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
-          description: '关注科技、创业、投资领域'
-        },
-        '极客时间': {
-          id: 'geektime',
-          name: '极客时间',
-          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
-          description: '科技媒体，提供有价值的科技资讯'
-        },
-        '虎嗅网': {
-          id: 'huxiu',
-          name: '虎嗅网',
-          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
-          description: '聚合新闻与商业资讯'
-        },
-        '差评': {
-          id: 'chaoping',
-          name: '差评',
-          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
-          description: '消费决策与社区驱动的新媒体平台'
-        },
-        '舴范儿': {
-          id: 'shifan',
-          name: '舴范儿',
-          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
-          description: '生活方式类内容品牌，主打平价优质商品'
-        },
-        '清博数据': {
-          id: 'qingblog',
-          name: '清博数据',
-          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
-          description: '聚合优质博客内容，提供深度的数据分析'
-        },
-        '晚点': {
-          id: 'wanbaodian',
-          name: '晚点',
-          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
-          description: '面向年轻人的文化内容平台'
-        },
-        '新榜': {
-          id: 'xinbang',
-          name: '新榜',
-          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
-          description: '新媒体数据平台，提供各类榜单数据'
-        },
-        '新讯': {
-          id: 'xink',
-          name: '新讯',
-          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx/xxx.jpg',
-          description: '科技与商业领域的新媒体'
-        },
-        '澎湃': {
-          id: 'thepaper',
-          name: '澎湃',
-          avatar: 'https://mmbiz.qpic.cn/mmbiz/xxx.jpg',
           description: '原澎湃新闻、思想者、优质内容平台'
         }
       };
-      
+
       // 如果是已知的模拟账号，返回模拟信息
       const accountInfo = mockAccounts[name];
-      
+
       if (accountInfo) {
         console.log(`✅ 找到公众号：${name}`);
         return accountInfo;
       }
-      
+
       // 未知账号，返回通用信息
       console.log(`⚠️ 公众号不在模拟列表中，返回默认信息`);
       return {
@@ -167,7 +107,7 @@ class Monitor {
         avatar: '',
         description: `公众号：${name}`
       };
-      
+
     } catch (error) {
       console.error('获取公众号信息失败:', error.message);
       throw new Error(`获取公众号信息失败：${error.message}`);
@@ -183,16 +123,16 @@ class Monitor {
   async fetchLatestArticles(accountId, limit = 10) {
     try {
       console.log(`正在获取最新文章...`);
-      
+
       // TODO: 实现真实的微信 API 调用
       // 目前返回模拟数据
-      
+
       const articles = this._generateMockArticles(accountId, limit);
-      
+
       console.log(`✅ 获取到 ${articles.length} 篇文章`);
-      
+
       return articles;
-      
+
     } catch (error) {
       console.error('获取文章失败:', error.message);
       throw new Error(`获取文章失败：${error.message}`);
@@ -207,10 +147,10 @@ class Monitor {
   async searchAccounts(keyword) {
     try {
       console.log(`正在搜索公众号：${keyword}`);
-      
+
       // TODO: 实现真实的微信 API 搜索
       // 目前返回模拟数据
-      
+
       const results = [
         {
           id: this._generateId(keyword),
@@ -219,11 +159,11 @@ class Monitor {
           description: `关于${keyword}的科技资讯`
         }
       ];
-      
+
       console.log(`✅ 找到 ${results.length} 个公众号`);
-      
+
       return results;
-      
+
     } catch (error) {
       console.error('搜索公众号失败:', error.message);
       throw new Error(`搜索公众号失败：${error.message}`);
@@ -249,11 +189,11 @@ class Monitor {
     ];
 
     const articles = [];
-    
+
     for (let i = 0; i < limit; i++) {
       const titleIndex = Math.floor(Math.random() * titles.length);
       const hoursAgo = Math.floor(Math.random() * 72); // 0-72 小时前
-      
+
       articles.push({
         id: `${accountId}_art_${Date.now()}_${i}`,
         title: titles[titleIndex],
