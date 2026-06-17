@@ -45,3 +45,9 @@ jobs:
         test -f "skills/xiaohongshu-collector/package.json"
         test -f "skills/wechat-article-monitor/SKILL.md"
         test -f "skills/xiaohongshu-collector/SKILL.md"
+
+    - name: Run tests (wechat-article-monitor)
+      run: cd skills/wechat-article-monitor && npm test
+
+    - name: Run tests (xiaohongshu-collector)
+      run: cd skills/xiaohongshu-collector && npm test

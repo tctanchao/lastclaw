@@ -1,10 +1,8 @@
 /**
  * 数据采集模块
- * 
+ *
  * 负责从小红书采集笔记数据
  */
-
-const axios = require('axios');
 
 class Collector {
   constructor(config = {}) {

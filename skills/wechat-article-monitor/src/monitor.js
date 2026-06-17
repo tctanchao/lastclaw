@@ -4,8 +4,6 @@
  * 负责获取公众号信息和文章数据
  */
 
-const axios = require('axios');
-
 class Monitor {
   constructor(config = {}) {
     this.config = {
