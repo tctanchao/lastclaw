@@ -161,9 +161,10 @@ class Storage {
     try {
       const existingArticles = await this.getArticles(accountId);
 
-      // 去重（根据标题）
-      const existingTitles = new Set(existingArticles.map(a => a.title));
-      const uniqueNew = newArticles.filter(a => !existingTitles.has(a.title));
+      // 去重（按文章 ID，ID 缺失时回退到标题）
+      const articleKey = (a) => a.id || a.title;
+      const existingKeys = new Set(existingArticles.map(articleKey));
+      const uniqueNew = newArticles.filter(a => !existingKeys.has(articleKey(a)));
 
       if (uniqueNew.length === 0) {
         console.log('✓ 没有新文章');

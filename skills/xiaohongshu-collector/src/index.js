@@ -89,27 +89,34 @@ class XiaohongshuCollector {
   }
 }
 
+// 共享单例：避免每次调用重复构造采集器
+let sharedCollector = null;
+function getCollector() {
+  if (!sharedCollector) {
+    sharedCollector = new XiaohongshuCollector();
+  }
+  return sharedCollector;
+}
+
 // OpenClaw 技能入口
 module.exports = {
   name: 'xiaohongshu-collector',
   version: '0.1.0',
   description: '小红书爆款采集',
-  
+
   handlers: {
     async search({ keyword }) {
-      const collector = new XiaohongshuCollector();
-      return await collector.search(keyword);
+      return await getCollector().search(keyword);
     },
-    
+
     async analyze({ keyword }) {
-      const collector = new XiaohongshuCollector();
+      const collector = getCollector();
       const notes = await collector.search(keyword);
       return collector.analyze(notes);
     },
-    
+
     async run({ keyword, filename }) {
-      const collector = new XiaohongshuCollector();
-      return await collector.run(keyword, filename || `${keyword}_笔记.xlsx`);
+      return await getCollector().run(keyword, filename || `${keyword}_笔记.xlsx`);
     }
   }
 };

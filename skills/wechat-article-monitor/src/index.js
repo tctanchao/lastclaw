@@ -147,18 +147,21 @@ class WeChatArticleMonitor {
   async _startMonitoringAccount(account) {
     console.log(`\n📰 ${account.name} - 开始监控`);
 
-    // 查看已有文章
-    const existingArticles = await this.storage.getArticles(account.id);
-    const existingTitles = new Set(existingArticles.map(a => a.title));
+    // 用文章 ID 去重（标题可能重复），ID 缺失时回退到标题
+    const articleKey = (a) => a.id || a.title;
 
     // 定时检查函数
     const checkFunction = async () => {
       try {
+        // 每次从存储读取已知文章，避免在内存中维护只增不减的集合
+        const existingArticles = await this.storage.getArticles(account.id);
+        const seen = new Set(existingArticles.map(articleKey));
+
         // 获取最新文章
         const newArticles = await this.monitor.fetchLatestArticles(account.id, this.config.maxArticles);
 
-        // 过滤出新文章
-        const freshArticles = newArticles.filter(article => !existingTitles.has(article.title));
+        // 过滤出新文章（按 ID 去重）
+        const freshArticles = newArticles.filter(article => !seen.has(articleKey(article)));
 
         if (freshArticles.length > 0) {
           console.log(`\n🔔 发现 ${freshArticles.length} 篇新文章：${account.name}`);
@@ -169,20 +172,15 @@ class WeChatArticleMonitor {
             console.log(`     🔗 ${article.url}`);
           }
 
-          // 保存新文章
-          await this.storage.saveArticles(account.id, [...newArticles]);
+          // 仅追加新文章（appendArticles 内部按 ID 去重持久化）
+          await this.storage.appendArticles(account.id, freshArticles);
 
           // 发送通知
           if (this.config.notifyEnabled) {
             await this.notifier.sendNotification(account, freshArticles);
           }
-
-          // 更新已有标题集合
-          for (const article of freshArticles) {
-            existingTitles.add(article.title);
-          }
         } else {
-          console.log(`✓ ${account.name} - 暂无新文章 (${new Date().().toLocaleTimeString()})`);
+          console.log(`✓ ${account.name} - 暂无新文章 (${new Date().toLocaleTimeString()})`);
         }
       } catch (error) {
         console.error(`❌ 检查失败：${error.message}`);
@@ -331,6 +329,15 @@ class WeChatArticleMonitor {
   }
 }
 
+// 共享单例：保证 start/stop 操作的是同一组定时任务与状态
+let sharedMonitor = null;
+function getMonitor() {
+  if (!sharedMonitor) {
+    sharedMonitor = new WeChatArticleMonitor();
+  }
+  return sharedMonitor;
+}
+
 // OpenClaw 技能入口
 module.exports = {
   name: 'wechat-article-monitor',
@@ -339,38 +346,31 @@ module.exports = {
 
   handlers: {
     async add({ name, id }) {
-      const monitor = new WeChatArticleMonitor();
-      return await monitor.addAccount(name, id);
+      return await getMonitor().addAccount(name, id);
     },
 
     async latest({ name }) {
-      const monitor = new WeChatArticleMonitor();
-      return await monitor.getLatestArticles(name);
+      return await getMonitor().getLatestArticles(name);
     },
 
     async list() {
-      const monitor = new WeChatArticleMonitor();
-      return await monitor.listAccounts();
+      return await getMonitor().listAccounts();
     },
 
     async remove({ name }) {
-      const monitor = new WeChatArticleMonitor();
-      return await monitor.removeAccount(name);
+      return await getMonitor().removeAccount(name);
     },
 
     async start() {
-      const monitor = new WeChatArticleMonitor();
-      await monitor.startMonitoring();
+      await getMonitor().startMonitoring();
     },
 
     async stop() {
-      const monitor = new WeChatArticleMonitor();
-      await monitor.stopMonitoring();
+      await getMonitor().stopMonitoring();
     },
 
     async export({ name, format }) {
-      const monitor = new WeChatArticleMonitor();
-      return await monitor.exportArticles(name, format);
+      return await getMonitor().exportArticles(name, format);
     }
   }
 };
